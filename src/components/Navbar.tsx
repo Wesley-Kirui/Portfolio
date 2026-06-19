@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon, Database } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
   activeSection: string;
   setActiveSection: (sec: string) => void;
-  isFirebaseMode: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   isDarkMode,
   setIsDarkMode,
   activeSection,
-  setActiveSection,
-  isFirebaseMode
+  setActiveSection
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -29,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'research', label: 'Research' },
     { id: 'certifications', label: 'Certifications' },
     { id: 'blog', label: 'Blog' },
-    { id: 'admin', label: 'Dashboard' },
+    { id: 'contact', label: 'Contact' }
   ];
 
   useEffect(() => {
@@ -41,9 +39,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       }
 
       // Scroll spy logic
-      if (activeSection === 'admin') return; // Don't spy when in admin view
+      if (activeSection === 'update') return; // Don't spy when in update view
 
-      const sections = navLinks.map(l => l.id).filter(id => id !== 'admin');
+      const sections = navLinks.map(l => l.id);
       const scrollPosition = window.scrollY + 120;
 
       for (const section of sections) {
@@ -67,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     setIsOpen(false);
     setActiveSection(id);
 
-    if (id === 'admin') {
+    if (id === 'update') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -127,18 +125,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
           </div>
 
-          {/* Right Side Options (Theme Toggle + Mode Indicator) */}
+          {/* Right Side Options (Theme Toggle) */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Database indicator */}
-            <div className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono border ${
-              isFirebaseMode 
-                ? 'bg-scientific-emerald/10 text-scientific-emerald border-scientific-emerald/30'
-                : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
-            }`}>
-              <Database size={12} />
-              <span>{isFirebaseMode ? 'Firebase Live' : 'Local Sandbox'}</span>
-            </div>
-
             {/* Theme Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
@@ -187,18 +175,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {link.label}
               </button>
             ))}
-            
-            {/* Database indicator mobile */}
-            <div className="px-4 py-2 flex items-center space-x-2">
-              <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-mono border ${
-                isFirebaseMode 
-                  ? 'bg-scientific-emerald/10 text-scientific-emerald border-scientific-emerald/30'
-                  : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
-              }`}>
-                <Database size={10} />
-                <span>{isFirebaseMode ? 'Firebase Database Mode' : 'Sandbox (LocalStorage)'}</span>
-              </span>
-            </div>
           </div>
         </div>
       )}

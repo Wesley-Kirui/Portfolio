@@ -12,8 +12,9 @@ import { ResumeView } from './components/ResumeView';
 import { Blog } from './components/Blog';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { AdminDashboard } from './components/AdminDashboard';
-import { dbTrackEvent, isFirebaseConfigured } from './db/store';
+import { UpdatePortal } from './components/UpdatePortal';
+import { dbTrackEvent, dbGetAssetsConfig } from './db/store';
+import type { AssetsConfig } from './db/store';
 
 function App() {
   // Theme state (Dark Mode by default)
@@ -23,7 +24,7 @@ function App() {
   });
 
   const [activeSection, setActiveSection] = useState<string>('home');
-  const isFirebase = isFirebaseConfigured();
+  const [assetsConfig, setAssetsConfig] = useState<AssetsConfig | null>(null);
 
   // Sync theme with HTML class
   useEffect(() => {
@@ -38,6 +39,20 @@ function App() {
       localStorage.setItem('portfolio_theme', 'light');
     }
   }, [isDarkMode]);
+
+  // Load assets config dynamically
+  const loadAssets = async () => {
+    try {
+      const config = await dbGetAssetsConfig();
+      setAssetsConfig(config);
+    } catch (err) {
+      console.error('Failed to load assets config', err);
+    }
+  };
+
+  useEffect(() => {
+    loadAssets();
+  }, []);
 
   // Track initial page view view
   useEffect(() => {
@@ -63,18 +78,17 @@ function App() {
         setIsDarkMode={setIsDarkMode}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
-        isFirebaseMode={isFirebase}
       />
 
       {/* Main Viewport Content */}
       <main className="relative z-10">
-        {activeSection === 'admin' ? (
-          // Protected Admin dashboard portal
-          <AdminDashboard />
+        {activeSection === 'update' ? (
+          // Protected Update portal
+          <UpdatePortal onAssetsUpdate={loadAssets} />
         ) : (
           // Main portfolio section stack
           <>
-            <Hero isDarkMode={isDarkMode} setActiveSection={setActiveSection} />
+            <Hero isDarkMode={isDarkMode} setActiveSection={setActiveSection} assetsConfig={assetsConfig} />
             <About />
             <Education />
             <Experience />
@@ -82,7 +96,7 @@ function App() {
             <Projects />
             <Research />
             <Certifications />
-            <ResumeView />
+            <ResumeView assetsConfig={assetsConfig} />
             <Blog />
             <Contact />
           </>
@@ -90,7 +104,7 @@ function App() {
       </main>
 
       {/* Footer bar */}
-      <Footer />
+      <Footer setActiveSection={setActiveSection} />
     </div>
   );
 }

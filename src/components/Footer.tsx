@@ -2,7 +2,11 @@ import React from 'react';
 import { Mail } from 'lucide-react';
 import { PERSONAL_INFO } from '../db/initialData';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  setActiveSection: (sec: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ setActiveSection }) => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -56,8 +60,18 @@ export const Footer: React.FC = () => {
 
       </div>
 
-      <div className="mt-8 text-center text-[10px] text-slate-600 font-mono tracking-widest">
-        &copy; {currentYear} {PERSONAL_INFO.fullName.toUpperCase()} • ALL RIGHTS RESERVED // SECURE COMPILE
+      <div className="mt-8 text-center text-[10px] text-slate-600 font-mono tracking-widest flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
+        <span>&copy; {currentYear} {PERSONAL_INFO.fullName.toUpperCase()} • ALL RIGHTS RESERVED // SECURE COMPILE</span>
+        <span className="hidden sm:inline text-slate-700">|</span>
+        <button
+          onClick={() => {
+            setActiveSection('update');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="text-slate-500 hover:text-scientific-teal hover:underline transition-colors"
+        >
+          SYSTEM UPDATE //
+        </button>
       </div>
     </footer>
   );

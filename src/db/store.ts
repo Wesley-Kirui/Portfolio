@@ -418,3 +418,55 @@ export const dbUploadFile = async (file: File): Promise<string> => {
   // Mock fallback: create a local object URL (valid during browser session)
   return URL.createObjectURL(file);
 };
+
+export interface AssetsConfig {
+  resumeUrl: string;
+  profile1Url: string;
+  profile2Url: string;
+}
+
+const DEFAULT_ASSETS: AssetsConfig = {
+  resumeUrl: '#',
+  profile1Url: './images/profile_1.jpg',
+  profile2Url: './images/profile_2.jpg'
+};
+
+export const dbGetAssetsConfig = async (): Promise<AssetsConfig> => {
+  if (isFirebaseConfigured()) {
+    try {
+      const { doc, getDoc, getFirestore, setDoc } = await import('firebase/firestore');
+      const db = getFirestore();
+      const docRef = doc(db, 'config', 'assets');
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        return snap.data() as AssetsConfig;
+      } else {
+        await setDoc(docRef, DEFAULT_ASSETS);
+        return DEFAULT_ASSETS;
+      }
+    } catch (e) {
+      console.warn('Firebase error fetching assets config, using LocalStorage', e);
+    }
+  }
+  const local = localStorage.getItem('portfolio_assets_config');
+  return local ? JSON.parse(local) : DEFAULT_ASSETS;
+};
+
+export const dbUpdateAssetsConfig = async (config: Partial<AssetsConfig>): Promise<AssetsConfig> => {
+  const current = await dbGetAssetsConfig();
+  const updated = { ...current, ...config };
+  
+  if (isFirebaseConfigured()) {
+    try {
+      const { doc, setDoc, getFirestore } = await import('firebase/firestore');
+      const db = getFirestore();
+      const docRef = doc(db, 'config', 'assets');
+      await setDoc(docRef, updated);
+      return updated;
+    } catch (e) {
+      console.error('Firebase error updating assets config, using LocalStorage', e);
+    }
+  }
+  localStorage.setItem('portfolio_assets_config', JSON.stringify(updated));
+  return updated;
+};

@@ -1,8 +1,13 @@
 import React from 'react';
 import { Download, Printer, Mail, Phone } from 'lucide-react';
 import { PERSONAL_INFO, EDUCATION, DEPARTMENTS, CERTIFICATIONS, RESEARCH_PORTFOLIO } from '../db/initialData';
+import type { AssetsConfig } from '../db/store';
 
-export const ResumeView: React.FC = () => {
+interface ResumeViewProps {
+  assetsConfig: AssetsConfig | null;
+}
+
+export const ResumeView: React.FC<ResumeViewProps> = ({ assetsConfig }) => {
   const handlePrint = () => {
     window.print();
   };
@@ -24,15 +29,27 @@ export const ResumeView: React.FC = () => {
 
         {/* Toolbar Buttons (No Print) */}
         <div className="flex justify-end space-x-4 mb-6 no-print">
-          <button
-            onClick={() => {
-              alert("Note: To download, you can use the 'Print' button and select 'Save as PDF' to generate a beautifully styled vector PDF document of this resume.");
-            }}
-            className="inline-flex items-center space-x-2 px-4 py-2.5 bg-navy-900 border border-slate-700/60 hover:border-scientific-teal text-slate-100 hover:bg-navy-800 light:bg-white light:border-slate-350 light:text-navy-900 light:hover:bg-slate-50 text-xs font-bold rounded-lg transition-colors"
-          >
-            <Download size={14} />
-            <span>Download PDF</span>
-          </button>
+          {assetsConfig?.resumeUrl && assetsConfig.resumeUrl !== '#' ? (
+            <a
+              href={assetsConfig.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 bg-navy-900 border border-slate-700/60 hover:border-scientific-teal text-slate-100 hover:bg-navy-800 light:bg-white light:border-slate-350 light:text-navy-900 light:hover:bg-slate-50 text-xs font-bold rounded-lg transition-colors"
+            >
+              <Download size={14} />
+              <span>Download PDF</span>
+            </a>
+          ) : (
+            <button
+              onClick={() => {
+                alert("Note: To download, you can use the 'Print' button and select 'Save as PDF' to generate a beautifully styled vector PDF document of this resume.");
+              }}
+              className="inline-flex items-center space-x-2 px-4 py-2.5 bg-navy-900 border border-slate-700/60 hover:border-scientific-teal text-slate-100 hover:bg-navy-800 light:bg-white light:border-slate-350 light:text-navy-900 light:hover:bg-slate-50 text-xs font-bold rounded-lg transition-colors"
+            >
+              <Download size={14} />
+              <span>Download PDF</span>
+            </button>
+          )}
 
           <button
             onClick={handlePrint}

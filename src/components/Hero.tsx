@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import { ArrowRight, FileText, Mail, Award, BookOpen, GraduationCap } from 'lucide-react';
 import { CanvasBackground } from './CanvasBackground';
 import { PERSONAL_INFO } from '../db/initialData';
+import type { AssetsConfig } from '../db/store';
 
 interface HeroProps {
   isDarkMode: boolean;
   setActiveSection: (sec: string) => void;
+  assetsConfig: AssetsConfig | null;
 }
 
-export const Hero: React.FC<HeroProps> = ({ isDarkMode, setActiveSection }) => {
+export const Hero: React.FC<HeroProps> = ({ isDarkMode, setActiveSection, assetsConfig }) => {
   const stats = [
     { label: 'Years of Study', value: '4', icon: <GraduationCap className="text-scientific-teal" size={20} /> },
     { label: 'Research Projects', value: '3', icon: <BookOpen className="text-scientific-cyan" size={20} /> },
@@ -142,14 +144,14 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode, setActiveSection }) => {
               <div className="absolute inset-1.5 rounded-xl overflow-hidden bg-navy-900 z-10 relative">
                 {/* Image 1: Main (Suit Blue) */}
                 <img
-                  src="./images/profile_1.jpg"
+                  src={assetsConfig?.profile1Url || "./images/profile_1.jpg"}
                   alt={PERSONAL_INFO.fullName}
                   className="w-full h-full object-cover object-top transition-all duration-700 ease-in-out group-hover:scale-105 group-hover:opacity-0"
                 />
                 
                 {/* Image 2: Hover (Suit Grey) */}
                 <img
-                  src="./images/profile_2.jpg"
+                  src={assetsConfig?.profile2Url || "./images/profile_2.jpg"}
                   alt={`${PERSONAL_INFO.fullName} Alternative`}
                   className="absolute inset-0 w-full h-full object-cover object-top opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-in-out bg-navy-950"
                 />
