@@ -103,7 +103,7 @@ export const UpdatePortal: React.FC<UpdatePortalProps> = ({ onAssetsUpdate }) =>
         >
           <div className="absolute top-0 left-0 right-0 bg-navy-950 px-4 py-2 border-b border-navy-850 flex items-center justify-between text-[10px] font-mono text-slate-400">
             <span>PORTAL SECURITY ACCESS</span>
-            <span> Weslykirui4627</span>
+            <span>STATUS: SECURE_LOCKED //</span>
           </div>
 
           <div className="text-center pt-6 mb-6">
